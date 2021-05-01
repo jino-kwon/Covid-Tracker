@@ -21,3 +21,8 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# git add . : add all the files in working dir. to the staging area
+# git status : show files in staging area (potential files to be added to the git)
+# git commit -m "message" : make a commit locally
+# git push -u origin main
