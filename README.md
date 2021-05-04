@@ -12,8 +12,3 @@ I hope that this tracker is useful to you.
 - new cases/recovered/deaths data were sourced from _Worldometers_
 - time series data for all countries were sourced from _Johns Hopkins University_
 - vaccination rates data were sourced from *https://covid.ourworldindata.org/*
-
-**Functionality** :
-
-- 클릭하면 맵 중앙으로 가는것.
-- 색깔이 다르게 표현됨.
