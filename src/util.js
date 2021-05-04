@@ -59,17 +59,15 @@ export const showDataOnMap = (data, casesType, vaccines) =>
         color: casesTypeColors[casesType].hex,
         fillColor: casesTypeColors[casesType].hex,
       }}
-      radius={
-        // Math.sqrt(countryData[casesType] / 10) *
-        // casesTypeColors[casesType].mulitiplier
-        getRadius(casesType, countryData, vaccines)
-      }
+      radius={getRadius(casesType, countryData, vaccines)}
     >
       <Popup>
         <div className="info-container">
           <div
             className="info-flag"
-            style={{ backgroundImage: `url(${countryData.countryInfo.flag})` }}
+            style={{
+              backgroundImage: `url(${countryData.countryInfo.flag})`,
+            }}
           />
           <div className="info-name">{countryData.country}</div>
           <div className="info-confirmed">

@@ -30,6 +30,20 @@ function App() {
   const [mapVaccines, setMapVaccines] = useState([]);
   const [casesType, setCasesType] = useState("cases");
 
+  // Fetching 'worldwide' data for the initial page
+  useEffect(() => {
+    fetch("https://disease.sh/v3/covid-19/all")
+      .then((response) => response.json())
+      .then((data) => {
+        setCountryInfo(data);
+      });
+    // for vaccination data
+    fetch("https://disease.sh/v3/covid-19/vaccine/coverage")
+      .then((response) => response.json())
+      .then((data) => {
+        setVaccineInfo(data);
+      });
+  }, []);
   // useEffect for fetching country data
   useEffect(() => {
     const getCountriesData = async () => {
@@ -53,20 +67,6 @@ function App() {
     };
     getCountriesData();
   }, []);
-  // Fetching worldwide data for the initial page
-  useEffect(() => {
-    fetch("https://disease.sh/v3/covid-19/all")
-      .then((response) => response.json())
-      .then((data) => {
-        setCountryInfo(data);
-      });
-    // for vaccination data
-    fetch("https://disease.sh/v3/covid-19/vaccine/coverage")
-      .then((response) => response.json())
-      .then((data) => {
-        setVaccineInfo(data);
-      });
-  }, []);
 
   const onCountryChange = async (event) => {
     const countryCode = event.target.value;
@@ -85,19 +85,19 @@ function App() {
           : setMapCenter([data.countryInfo.lat, data.countryInfo.long]);
         setMapZoom(4);
       });
-    // This is for vaccination data (sourced from a different url)
-    const urlTwo =
+    // for vaccination data (sourced from a different url)
+    const vaccineUrl =
       countryCode === "worldwide"
-        ? "https://disease.sh/v3/covid-19/vaccine/coverage"
-        : `https://disease.sh/v3/covid-19/vaccine/coverage/countries/${countryCode}`;
+        ? "https://disease.sh/v3/covid-19/vaccine/coverage?lastdays=140"
+        : `https://disease.sh/v3/covid-19/vaccine/coverage/countries/${countryCode}?lastdays=140`;
 
-    await fetch(urlTwo)
+    await fetch(vaccineUrl)
       .then((response) => response.json())
       .then((data) => {
         if (countryCode === "worldwide") setVaccineInfo(data);
         else if (typeof data.timeline !== "undefined")
           setVaccineInfo(data.timeline);
-        else setVaccineInfo({ 0: 0, 1: 1 }); // this is a dummy array (for getTotalVaccine)
+        else setVaccineInfo({ 0: 0, 1: 0 }); // this is a dummy array (for 'getVaccineNum')
       });
   };
   return (
@@ -120,7 +120,6 @@ function App() {
             </Select>
           </FormControl>
         </div>
-        {/* InfoBoxes */}
         <div className="app__stats">
           <InfoBox
             title="Cases"
@@ -170,12 +169,7 @@ function App() {
           <h3 className="app__graphName">
             Worldwide Data for the Past 140 Days
           </h3>
-          <LineGraph
-            className="app__graph"
-            casesType={casesType}
-            // data={}
-            // vaccineData={}
-          />
+          <LineGraph className="app__graph" casesType={casesType} />
         </CardContent>
       </Card>
     </div>

@@ -79,7 +79,6 @@ const options = {
 
 function LineGraph({ casesType, ...props }) {
   const [data, setData] = useState({});
-  // const [vaccineData, setVaccineData] = useState({});
 
   useEffect(() => {
     const fetchData = async () => {
@@ -91,13 +90,8 @@ function LineGraph({ casesType, ...props }) {
           .then((data) => {
             let chartData = buildVaccineChart(data);
             setData(chartData);
-            // setVaccineData(chartData);
           });
       } else {
-        // const url =
-        // countryCode === "worldwide"
-        //   ? "https://disease.sh/v3/covid-19/all?lastdays=140"
-        //   : `https://disease.sh/v3/covid-19/countries/${countryCode}`;
         await fetch(
           "https://disease.sh/v3/covid-19/historical/all?lastdays=140"
         )
@@ -120,7 +114,7 @@ function LineGraph({ casesType, ...props }) {
               {
                 label: "new records of '" + casesType + "'",
                 fill: false,
-                backgroundColor: casesTypeColors[casesType].hex,
+                backgroundColor: "white",
                 borderColor: casesTypeColors[casesType].hex,
                 data: data,
                 borderCapStyle: "butt",
