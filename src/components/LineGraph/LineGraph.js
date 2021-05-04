@@ -94,6 +94,10 @@ function LineGraph({ casesType, ...props }) {
             // setVaccineData(chartData);
           });
       } else {
+        // const url =
+        // countryCode === "worldwide"
+        //   ? "https://disease.sh/v3/covid-19/all?lastdays=140"
+        //   : `https://disease.sh/v3/covid-19/countries/${countryCode}`;
         await fetch(
           "https://disease.sh/v3/covid-19/historical/all?lastdays=140"
         )
@@ -114,10 +118,24 @@ function LineGraph({ casesType, ...props }) {
           data={{
             datasets: [
               {
-                label: casesType,
-                backgroundColor: "white",
+                label: "new records of '" + casesType + "'",
+                fill: false,
+                backgroundColor: casesTypeColors[casesType].hex,
                 borderColor: casesTypeColors[casesType].hex,
                 data: data,
+                borderCapStyle: "butt",
+                borderDash: [],
+                borderDashOffset: 0.0,
+                borderJoinStyle: "miter",
+                pointBorderColor: "white",
+                pointBackgroundColor: casesTypeColors[casesType].hex,
+                pointBorderWidth: 1,
+                pointHoverRadius: 8,
+                pointHoverBackgroundColor: "black",
+                pointHoverBorderColor: "white",
+                pointHoverBorderWidth: 2,
+                pointRadius: 3,
+                pointHitRadius: 10,
               },
             ],
           }}

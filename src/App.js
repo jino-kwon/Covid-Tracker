@@ -11,12 +11,7 @@ import InfoBox from "./components/InfoBox/InfoBox";
 import Map from "./components/Map/Map";
 import "leaflet/dist/leaflet.css";
 import Table from "./components/Table/Table";
-import {
-  sortDataHelper,
-  beautifyStatHelper,
-  getTodayVaccineNum,
-  getTotalVaccineNum,
-} from "./util";
+import { sortDataHelper, beautifyStatHelper, getVaccineNum } from "./util";
 import LineGraph from "./components/LineGraph/LineGraph";
 import "./components/InfoBox/InfoBox.css";
 {
@@ -99,9 +94,6 @@ function App() {
     await fetch(urlTwo)
       .then((response) => response.json())
       .then((data) => {
-        // countryCode === "worldwide"
-        //   ? setVaccineInfo(data)
-        //   : setVaccineInfo(data.timeline);
         if (countryCode === "worldwide") setVaccineInfo(data);
         else if (typeof data.timeline !== "undefined")
           setVaccineInfo(data.timeline);
@@ -155,8 +147,10 @@ function App() {
             title="Vaccinated"
             onClick={(event) => setCasesType("vaccinated")}
             active={casesType === "vaccinated"}
-            cases={beautifyStatHelper(getTodayVaccineNum(vaccineInfo))}
-            total={beautifyStatHelper(getTotalVaccineNum(vaccineInfo))}
+            cases={beautifyStatHelper(
+              getVaccineNum(vaccineInfo, 1) - getVaccineNum(vaccineInfo, 2)
+            )} // get today's vaccine data : ( today's cases - yesterday's cases)
+            total={beautifyStatHelper(getVaccineNum(vaccineInfo, 0))}
           />
         </div>
 
@@ -171,11 +165,17 @@ function App() {
 
       <Card className="app__right">
         <CardContent>
-          {/* Table */}
           <h3>Live Cases</h3>
           <Table countries={tableData} />
-          <h3 className="app__graphName">Worldwide new {casesType}</h3>
-          <LineGraph className="app__graph" casesType={casesType} />
+          <h3 className="app__graphName">
+            Worldwide Data for the Past 140 Days
+          </h3>
+          <LineGraph
+            className="app__graph"
+            casesType={casesType}
+            // data={}
+            // vaccineData={}
+          />
         </CardContent>
       </Card>
     </div>

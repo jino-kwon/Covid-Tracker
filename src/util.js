@@ -7,13 +7,9 @@ export const sortDataHelper = (data) => {
   return sortedData.sort((a, b) => (a.cases > b.cases ? -1 : 1));
 };
 
-// Helper functions to get today's and total vaccination numbers
-export const getTodayVaccineNum = (data) =>
-  data[Object.keys(data)[Object.keys(data).length - 2]] -
-  data[Object.keys(data)[Object.keys(data).length - 3]];
-
-export const getTotalVaccineNum = (data) =>
-  data[Object.keys(data)[Object.keys(data).length - 1]];
+// Helper functions to get vaccination numbers
+export const getVaccineNum = (data, day) =>
+  data[Object.keys(data)[Object.keys(data).length - 1 - day]];
 
 // Helper function to make stats numbers look cleaner
 export const beautifyStatHelper = (stat) =>
@@ -43,7 +39,7 @@ const getRadius = (casesType, countryData, vaccines) => {
   if (casesType === "vaccinated") {
     return (
       Math.sqrt(
-        getTotalVaccineNum(findVaccine(countryData.country, vaccines)) / 10
+        getVaccineNum(findVaccine(countryData.country, vaccines), 0) / 10
       ) * casesTypeColors[casesType].mulitiplier
     );
   } else {
@@ -89,7 +85,7 @@ export const showDataOnMap = (data, casesType, vaccines) =>
           <div className="info-vaccinated">
             <strong>Vaccinated</strong>:{" "}
             {numeral(
-              getTotalVaccineNum(findVaccine(countryData.country, vaccines))
+              getVaccineNum(findVaccine(countryData.country, vaccines), 0)
             ).format("0,0")}
           </div>
         </div>
