@@ -3,7 +3,7 @@ import { MapContainer, TileLayer, useMap } from "react-leaflet";
 import "./Map.css";
 import { showDataOnMap } from "../../util";
 
-function Map({ countries, casesType, center, zoom }) {
+function Map({ countries, casesType, center, zoom, vaccines }) {
   function ChangeView({ center, zoom }) {
     const map = useMap();
     map.setView(center, zoom);
@@ -24,7 +24,7 @@ function Map({ countries, casesType, center, zoom }) {
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
       {/* loop through countries and draw circles on the screen */}
-      {showDataOnMap(countries, casesType)}
+      {showDataOnMap(countries, casesType, vaccines)}
     </MapContainer>
   );
 }

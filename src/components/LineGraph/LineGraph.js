@@ -1,25 +1,44 @@
 import React, { useState, useEffect } from "react";
 import { Line } from "react-chartjs-2";
 import numeral from "numeral";
+import { casesTypeColors } from "../../util";
 
-const buildChartData = (data, casesType) => {
+const buildChart = (data, casesType) => {
   let chartData = [];
-  let lastData;
+  let prevData;
   for (let date in data.cases) {
-    if (lastData) {
+    if (prevData) {
       let newData = {
         x: date,
-        y: data[casesType][date] - lastData,
+        y: data[casesType][date] - prevData,
       };
       chartData.push(newData);
     }
-    lastData = data[casesType][date];
+    prevData = data[casesType][date];
+  }
+  return chartData;
+};
+
+const buildVaccineChart = (data) => {
+  let chartData = [];
+  let prevData;
+  for (let date in data) {
+    if (prevData) {
+      let newData = {
+        x: date,
+        y: data[date] - prevData,
+      };
+      chartData.push(newData);
+    }
+    prevData = data[date];
   }
   return chartData;
 };
 
 const options = {
-  legend: { display: false },
+  legend: {
+    display: false,
+  },
   elements: {
     point: { radius: 0 },
   },
@@ -28,7 +47,7 @@ const options = {
     mode: "index",
     intersect: false,
     callbacks: {
-      label: function (tooltipItem, data) {
+      label: function (tooltipItem) {
         return numeral(tooltipItem.value).format("+0,0");
       },
     },
@@ -45,10 +64,11 @@ const options = {
     ],
     yAxes: [
       {
-        gridLines: { display: false },
+        gridLines: {
+          display: false,
+        },
         ticks: {
-          // 'numeral' shows a number when hovering over a data point
-          callback: function (value, index, values) {
+          callback: function (value) {
             return numeral(value).format("0a");
           },
         },
@@ -59,18 +79,31 @@ const options = {
 
 function LineGraph({ casesType, ...props }) {
   const [data, setData] = useState({});
+  // const [vaccineData, setVaccineData] = useState({});
 
   useEffect(() => {
     const fetchData = async () => {
-      await fetch("https://disease.sh/v3/covid-19/historical/all?lastdays=90")
-        .then((response) => response.json())
-        .then((data) => {
-          let chartData = buildChartData(data, casesType);
-          setData(chartData);
-          // console.log(chartData)
-        });
+      if (casesType === "vaccinated") {
+        await fetch(
+          "https://disease.sh/v3/covid-19/vaccine/coverage?lastdays=140"
+        )
+          .then((response) => response.json())
+          .then((data) => {
+            let chartData = buildVaccineChart(data);
+            setData(chartData);
+            // setVaccineData(chartData);
+          });
+      } else {
+        await fetch(
+          "https://disease.sh/v3/covid-19/historical/all?lastdays=140"
+        )
+          .then((response) => response.json())
+          .then((data) => {
+            let chartData = buildChart(data, casesType);
+            setData(chartData);
+          });
+      }
     };
-
     fetchData();
   }, [casesType]);
 
@@ -81,8 +114,9 @@ function LineGraph({ casesType, ...props }) {
           data={{
             datasets: [
               {
-                backgroundColor: "rgba(204, 16, 52, 0.5)",
-                borderColor: "#CC1034",
+                label: casesType,
+                backgroundColor: "white",
+                borderColor: casesTypeColors[casesType].hex,
                 data: data,
               },
             ],

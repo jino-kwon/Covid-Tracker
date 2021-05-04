@@ -9,19 +9,20 @@
 
 .info-flag img {
   width: 100px;
-  border-radius: 3px;
+  /* border-radius: 3px; */
 }
 
 .info-flag {
-  height: 80px;
+  height: 90px;
   width: 100%;
   background-size: cover;
-  /* border-radius: 5px; */
+  border-radius: 5px;
 }
 
 .info-confirmed,
 .info-deaths,
-.info-recovered {
+.info-recovered,
+.info-vaccinated {
   font-size: 14px;
   margin-top: 3px;
 }
@@ -31,5 +32,5 @@
   font-weight: bold;
   color: #555;
   text-align: center;
-  margin-top: 2px;
+  margin-top: 3px;
 }

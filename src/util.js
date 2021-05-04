@@ -4,69 +4,106 @@ import { Circle, Popup } from "react-leaflet";
 
 export const sortDataHelper = (data) => {
   const sortedData = [...data];
-
   return sortedData.sort((a, b) => (a.cases > b.cases ? -1 : 1));
-  // or, we can do:
-  // sortedData.sort((a, b) => {
-  //     if (a.cases > b.cases) return -1
-  //     else return 1
-  // })
-  // return sortedData
 };
 
+// Helper functions to get today's and total vaccination numbers
+export const getTodayVaccineNum = (data) =>
+  data[Object.keys(data)[Object.keys(data).length - 2]] -
+  data[Object.keys(data)[Object.keys(data).length - 3]];
+
+export const getTotalVaccineNum = (data) =>
+  data[Object.keys(data)[Object.keys(data).length - 1]];
+
+// Helper function to make stats numbers look cleaner
 export const beautifyStatHelper = (stat) =>
   stat ? `+${numeral(stat).format("0.0a")}` : "+0";
 
 // For Map.js : loops through countries and draw circles on the screen
-const casesTypeColors = {
+export const casesTypeColors = {
   cases: {
     hex: "#787887",
     mulitiplier: 500,
   },
-
+  deaths: {
+    hex: "#CC1034",
+    mulitiplier: 3000,
+  },
   recovered: {
     hex: "#7DD71D",
     mulitiplier: 500,
   },
-
-  deaths: {
-    hex: "#CC1034",
-    mulitiplier: 2000,
+  vaccinated: {
+    hex: "#1a75ff",
+    mulitiplier: 150,
   },
 };
 
-export const showDataOnMap = (data, casesType) =>
-  data.map((country) => (
+const getRadius = (casesType, countryData, vaccines) => {
+  if (casesType === "vaccinated") {
+    return (
+      Math.sqrt(
+        getTotalVaccineNum(findVaccine(countryData.country, vaccines)) / 10
+      ) * casesTypeColors[casesType].mulitiplier
+    );
+  } else {
+    return (
+      Math.sqrt(countryData[casesType] / 10) *
+      casesTypeColors[casesType].mulitiplier
+    );
+  }
+};
+
+export const showDataOnMap = (data, casesType, vaccines) =>
+  data.map((countryData) => (
     <Circle
-      center={[country.countryInfo.lat, country.countryInfo.long]}
+      center={[countryData.countryInfo.lat, countryData.countryInfo.long]}
       fillOpacity={0.4}
       pathOptions={{
         color: casesTypeColors[casesType].hex,
         fillColor: casesTypeColors[casesType].hex,
       }}
       radius={
-        Math.sqrt(country[casesType] / 10) *
-        casesTypeColors[casesType].mulitiplier
+        // Math.sqrt(countryData[casesType] / 10) *
+        // casesTypeColors[casesType].mulitiplier
+        getRadius(casesType, countryData, vaccines)
       }
     >
       <Popup>
         <div className="info-container">
           <div
             className="info-flag"
-            style={{ backgroundImage: `url(${country.countryInfo.flag})` }}
+            style={{ backgroundImage: `url(${countryData.countryInfo.flag})` }}
           />
-          <div className="info-name">{country.country}</div>
+          <div className="info-name">{countryData.country}</div>
           <div className="info-confirmed">
-            <strong>Cases</strong>: {numeral(country.cases).format("0,0")}
+            <strong>Cases</strong>: {numeral(countryData.cases).format("0,0")}
+          </div>
+          <div className="info-deaths">
+            <strong>Deaths</strong>: {numeral(countryData.deaths).format("0,0")}
           </div>
           <div className="info-recovered">
             <strong>Recovered</strong>:{" "}
-            {numeral(country.recovered).format("0,0")}
+            {numeral(countryData.recovered).format("0,0")}
           </div>
-          <div className="info-deaths">
-            <strong>Deaths</strong>: {numeral(country.deaths).format("0,0")}
+          <div className="info-vaccinated">
+            <strong>Vaccinated</strong>:{" "}
+            {numeral(
+              getTotalVaccineNum(findVaccine(countryData.country, vaccines))
+            ).format("0,0")}
           </div>
         </div>
       </Popup>
     </Circle>
   ));
+
+const findVaccine = (countryName, vaccines) => {
+  const countryVaccine = vaccines.filter(
+    (vaccine) => vaccine.country === countryName
+  );
+  if (typeof countryVaccine[0] !== "undefined") {
+    return countryVaccine[0].timeline;
+  } else {
+    return { 0: 0, 1: 1 }; // this is a dummy array (for getTotalVaccine)
+  }
+};
