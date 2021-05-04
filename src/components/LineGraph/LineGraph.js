@@ -112,7 +112,7 @@ function LineGraph({ casesType, ...props }) {
           data={{
             datasets: [
               {
-                label: "new records of '" + casesType + "'",
+                label: "daily records of '" + casesType + "'",
                 fill: false,
                 backgroundColor: "white",
                 borderColor: casesTypeColors[casesType].hex,

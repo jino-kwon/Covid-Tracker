@@ -2,9 +2,16 @@ import React from "react";
 import numeral from "numeral";
 import { Circle, Popup } from "react-leaflet";
 
-export const sortDataHelper = (data) => {
+export const sortDataHelper = (data, casesType) => {
   const sortedData = [...data];
-  return sortedData.sort((a, b) => (a.cases > b.cases ? -1 : 1));
+  return sortedData.sort((a, b) => (a[casesType] > b[casesType] ? -1 : 1));
+};
+
+export const sortVaccineHelper = (data) => {
+  const sortedData = [...data];
+  return sortedData.sort((a, b) =>
+    getVaccineNum(a.timeline, 0) > getVaccineNum(b.timeline, 0) ? -1 : 1
+  );
 };
 
 // Helper functions to get vaccination numbers
@@ -91,13 +98,13 @@ export const showDataOnMap = (data, casesType, vaccines) =>
     </Circle>
   ));
 
-const findVaccine = (countryName, vaccines) => {
+export const findVaccine = (countryName, vaccines) => {
   const countryVaccine = vaccines.filter(
     (vaccine) => vaccine.country === countryName
   );
   if (typeof countryVaccine[0] !== "undefined") {
     return countryVaccine[0].timeline;
   } else {
-    return { 0: 0, 1: 1 }; // this is a dummy array (for getTotalVaccine)
+    return { 0: 0, 1: 0 }; // this is a dummy array (for getTotalVaccine)
   }
 };

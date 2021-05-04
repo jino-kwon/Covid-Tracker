@@ -11,7 +11,12 @@ import InfoBox from "./components/InfoBox/InfoBox";
 import Map from "./components/Map/Map";
 import "leaflet/dist/leaflet.css";
 import Table from "./components/Table/Table";
-import { sortDataHelper, beautifyStatHelper, getVaccineNum } from "./util";
+import {
+  sortDataHelper,
+  sortVaccineHelper,
+  beautifyStatHelper,
+  getVaccineNum,
+} from "./util";
 import LineGraph from "./components/LineGraph/LineGraph";
 import "./components/InfoBox/InfoBox.css";
 {
@@ -29,6 +34,7 @@ function App() {
   const [mapCountries, setMapCountries] = useState([]);
   const [mapVaccines, setMapVaccines] = useState([]);
   const [casesType, setCasesType] = useState("cases");
+  const [tableVaccine, setTableVaccine] = useState([]);
 
   // Fetching 'worldwide' data for the initial page
   useEffect(() => {
@@ -54,7 +60,7 @@ function App() {
             name: country.country, // United States, United Kingdom..
             value: country.countryInfo.iso2, // USA,UK,..
           }));
-          let sortedData = sortDataHelper(data);
+          let sortedData = sortDataHelper(data, casesType);
           setTableData(sortedData);
           setCountries(countries);
           setMapCountries(data);
@@ -62,6 +68,8 @@ function App() {
       await fetch("https://disease.sh/v3/covid-19/vaccine/coverage/countries/")
         .then((response) => response.json())
         .then((data) => {
+          let sortedData = sortVaccineHelper(data);
+          setTableVaccine(sortedData);
           setMapVaccines(data);
         });
     };
@@ -164,11 +172,13 @@ function App() {
 
       <Card className="app__right">
         <CardContent>
-          <h3>Live Cases</h3>
-          <Table countries={tableData} />
-          <h3 className="app__graphName">
-            Worldwide Data for the Past 140 Days
-          </h3>
+          <h3>Total {casesType} (high — low)</h3>
+          <Table
+            countries={tableData}
+            casesType={casesType}
+            vaccines={tableVaccine}
+          />
+          <h3 className="app__graphName">Worldwide data (past 140 days)</h3>
           <LineGraph className="app__graph" casesType={casesType} />
         </CardContent>
       </Card>
