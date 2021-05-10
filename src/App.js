@@ -172,13 +172,15 @@ function App() {
 
       <Card className="app__right">
         <CardContent>
-          <h3>Total {casesType} (high — low)</h3>
+          <h3>Worldwide total {casesType} (high - low)</h3>
           <Table
             countries={tableData}
             casesType={casesType}
             vaccines={tableVaccine}
           />
-          <h3 className="app__graphName">Worldwide data (past 140 days)</h3>
+          <h3 className="app__graphName">
+            Worldwide daily records (past 140 days)
+          </h3>
           <LineGraph className="app__graph" casesType={casesType} />
         </CardContent>
       </Card>
