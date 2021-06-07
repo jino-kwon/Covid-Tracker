@@ -9,7 +9,8 @@ I hope that this tracker is useful to you.
 
 **Tech Stack** :
 
-- React (frontend) | React-leaflet (mapping)
+- React (frontend)
+- React-leaflet (map)
 - Chart.js (data visualization - line graph)
 - Material-ui (UI design)
 - Firebase (deployment)
