@@ -1,4 +1,5 @@
 # COVID-19 DATA TRACKER
+⛔️ DEPRECATED - This project is no longer maintained.
 
 In 2021, the world is still fighting against coronavirus while a growing number of people are vaccinated. I have faith that a growing rate of vaccination (of course, on top of social-distancing and various social endeavors) will help us overcome this crisis.
 Although there are many helpful data trackers out there, _not many of existing trackers allow me to see coronavirus data and vaccination data right next to each other (on the same page)_.
