@@ -6,7 +6,7 @@ This is probably because (as of April 29, 2021 when I started this project) it h
 I hope that this tracker is useful to you.
 
 **See the demo here** : *https://covid-tracker-ccad9.web.app*
-⛔️ DEPRECATED - This project is no longer maintained.
+(⛔️ DEPRECATED - This project is no longer maintained.)
 
 **Tech Stack** :
 
